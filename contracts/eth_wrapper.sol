@@ -1,23 +1,33 @@
 import 'erc20/base.sol';
+import 'actor/base.sol';
 
 contract DSEthTokenEvents {
     event Deposit( address indexed who, uint amount );
     event Withdrawal( address indexed who, uint amount );
 }
 
-contract DSEthToken is ERC20Base(0), DSEthTokenEvents {
+contract DSEthToken is ERC20Base(0)
+                     , DSBaseActor
+                     , DSEthTokenEvents
+{
     function totalSupply() constant returns (uint supply) {
         return this.balance;
     }
-    function withdraw( uint amount ) returns (bool ok) {
+    function withdraw( uint amount ) {
+        if (!tryWithdraw(amount)) {
+            throw;
+        }
+    }
+    function tryWithdraw( uint amount ) returns (bool ok) {
         _balances[msg.sender] = safeSub(_balances[msg.sender], amount);
-        if( msg.sender.call.value( amount )() ) {
+        bytes memory calldata; // define a blank `bytes`
+        if (tryExec(msg.sender, calldata, amount)) { 
             Withdrawal( msg.sender, amount );
             return true;
         } else {
             _balances[msg.sender] = safeAdd(_balances[msg.sender], amount);
+            return false;
         }
-        return false;
     }
     function deposit() returns (bool ok) {
         _balances[msg.sender] += msg.value;

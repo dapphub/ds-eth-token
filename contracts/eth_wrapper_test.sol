@@ -27,7 +27,7 @@ contract DSEthTokenTest is ERC20Test, DSEthTokenEvents {
 
         var startingBalance = this.balance;
         if (!token.call.value(10)("deposit")) throw;
-        assertTrue(DSEthToken(token).withdraw(5));
+        assertTrue(DSEthToken(token).tryWithdraw(5));
         assertEq(this.balance, startingBalance - 5);
     }
 
@@ -60,12 +60,12 @@ contract ReentrantWithdrawalAttack {
     function attack() {
         _bal = this.balance;
         _token.deposit.value(_bal)();
-        _token.withdraw(_bal);
+        _token.tryWithdraw(_bal);
     }
 
     function() {
         if (msg.sender == _owner) return;
-        _token.withdraw(_bal);
+        _token.tryWithdraw(_bal);
     }
 }
 
@@ -91,6 +91,6 @@ contract ReentrantWithdrawalAttack2 {
         if (msg.sender == _owner) return;
         if (_entered) throw;
         _entered = true;
-        _token.withdraw(_bal / 4);
+        _token.tryWithdraw(_bal / 4);
     }
 }

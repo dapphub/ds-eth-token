@@ -9,3 +9,4 @@ TODOs:
 
 * Expose as user mixin (`MordenEthWrapperUser`)
 * Expose as library proxy (ie DELEGATECALL something with instance ETH token address in code)
+* Record dependencies in dappfile
