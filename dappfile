@@ -1,0 +1,19 @@
+name: eth-wrapper
+version: 0.2.0
+tags: []
+layout:
+  sol_sources: contracts
+  build_dir: build
+dependencies: {}
+ignore: []
+environments:
+  morden:
+    objects:
+      eth_token:
+        class: DSEthToken
+        address: '0x52fe88b987c7829e5d5a61c98f67c9c14e6a7a90'
+  ethlive:
+    objects:
+      eth_token:
+        class: DSEthToken
+        address: '0xecf8f87f810ecf450940c9f60066b4a7a501d6a7'
