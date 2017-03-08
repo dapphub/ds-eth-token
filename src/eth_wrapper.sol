@@ -12,6 +12,10 @@ contract DSEthToken is DSTokenBase(0)
                      , DSActor
                      , DSEthTokenEvents
 {
+    string public constant name = "Wrapper ETH";
+    string public constant symbol = "W-ETH";
+    uint   public constant decimals = 18;
+
     function totalSupply() constant returns (uint supply) {
         return this.balance;
     }
