@@ -1,15 +1,21 @@
-import 'erc20/base.sol';
-import 'actor/base.sol';
+pragma solidity ^0.4.8;
+
+import 'ds-token/base.sol';
+import 'ds-actor/actor.sol';
 
 contract DSEthTokenEvents {
     event Deposit( address indexed who, uint amount );
     event Withdrawal( address indexed who, uint amount );
 }
 
-contract DSEthToken is ERC20Base(0)
-                     , DSBaseActor
+contract DSEthToken is DSTokenBase(0)
+                     , DSActor
                      , DSEthTokenEvents
 {
+    string public constant name = "Wrapper ETH";
+    string public constant symbol = "W-ETH";
+    uint   public constant decimals = 18;
+
     function totalSupply() constant returns (uint supply) {
         return this.balance;
     }
@@ -29,13 +35,13 @@ contract DSEthToken is ERC20Base(0)
             return false;
         }
     }
-    function deposit() returns (bool ok) {
+    function deposit() payable returns (bool ok) {
         _balances[msg.sender] += msg.value;
         Deposit( msg.sender, msg.value );
         return true;
     }
-    function() returns (bool) {
-        return deposit();
+    function() payable {
+        deposit();
     }
 
     // Hoisted to remove dependency on entire util package
