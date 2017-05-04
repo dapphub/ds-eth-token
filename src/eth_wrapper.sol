@@ -26,8 +26,7 @@ contract DSEthToken is DSTokenBase(0)
     }
     function tryWithdraw(uint amount) returns (bool ok) {
         _balances[msg.sender] = safeSub(_balances[msg.sender], amount);
-        bytes memory calldata; // define a blank `bytes`
-        if (tryExec(msg.sender, calldata, amount)) { 
+        if (tryExec(msg.sender, amount)) {
             Withdrawal(msg.sender, amount);
             return true;
         } else {
