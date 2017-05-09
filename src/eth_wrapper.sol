@@ -50,7 +50,7 @@ contract DSEthToken is DSTokenBase(0)
         withdraw(amount);
     }
 
-    function wrap(uint amount) payable {
-        deposit(amount);
+    function wrap() payable {
+        deposit();
     }
 }
