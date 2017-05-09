@@ -25,6 +25,18 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
         assertEq(token.balanceOf(this), initialBalance + 10);
     }
 
+    function testAliases() {
+        var startingBalance = this.balance;
+
+        if (!token.call.value(10)("wrap")) throw;
+        assertEq(token.balanceOf(this), initialBalance + 10);
+        assertEq(this.balance, startingBalance - 10);
+
+        DSEthToken(token).unwrap(10);
+        assertEq(token.balanceOf(this), initialBalance);
+        assertEq(this.balance, startingBalance);
+    }
+
     function testWithdraw() {
         expectEventsExact(token);
         Deposit(this, 10);

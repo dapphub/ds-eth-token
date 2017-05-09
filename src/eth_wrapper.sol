@@ -19,11 +19,13 @@ contract DSEthToken is DSTokenBase(0)
     function totalSupply() constant returns (uint supply) {
         return this.balance;
     }
+
     function withdraw(uint amount) {
         if (!tryWithdraw(amount)) {
             throw;
         }
     }
+
     function tryWithdraw(uint amount) returns (bool ok) {
         _balances[msg.sender] = sub(_balances[msg.sender], amount);
         if (tryExec(msg.sender, amount)) {
@@ -34,9 +36,20 @@ contract DSEthToken is DSTokenBase(0)
             return false;
         }
     }
+
     function deposit() payable {
         _balances[msg.sender] += msg.value;
         Deposit(msg.sender, msg.value);
+    }
+
+    // widthdraw alias
+    function unwrap(uint amount) {
+        withdraw(amount);
+    }
+
+    // deposit alias
+    function wrap() payable {
+        deposit();
     }
 
     function() payable {
