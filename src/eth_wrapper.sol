@@ -12,7 +12,7 @@ contract DSEthToken is DSTokenBase(0)
                      , DSExec
                      , DSEthTokenEvents
 {
-    string public constant name     = "Wrapper ETH";
+    string public constant name     = "Wrapped ETH";
     string public constant symbol   = "W-ETH";
     uint   public constant decimals = 18;
 
@@ -53,6 +53,14 @@ contract DSEthToken is DSTokenBase(0)
     }
 
     function() payable {
+        deposit();
+    }
+
+    function unwrap(uint amount) {
+        withdraw(amount);
+    }
+
+    function wrap() payable {
         deposit();
     }
 }
