@@ -1,6 +1,9 @@
-[submodule "dapple_packages/erc20"]
-	path = dapple_packages/erc20
-	url = https://github.com/nexusdev/erc20
-[submodule "dapple_packages/actor"]
-	path = dapple_packages/actor
-	url = https://github.com/nexusdev/ds-actor
+[submodule "lib/ds-test"]
+	path = lib/ds-test
+	url = https://github.com/dapphub/ds-test
+[submodule "lib/ds-token"]
+	path = lib/ds-token
+	url = https://github.com/dapphub/ds-token
+[submodule "lib/ds-exec"]
+	path = lib/ds-exec
+	url = https://github.com/dapphub/ds-exec

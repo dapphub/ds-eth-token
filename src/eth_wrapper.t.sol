@@ -1,13 +1,18 @@
-import 'dapple/test.sol';
-import 'erc20/erc20.sol';
-import 'erc20/base_test.sol';
-import 'eth_wrapper.sol';
+pragma solidity ^0.4.10;
 
-contract DSEthTokenTest is ERC20Test, DSEthTokenEvents {
+import "ds-test/test.sol";
+import 'ds-token/base.sol';
+import 'ds-token/base.t.sol';
+import './eth_wrapper.sol';
+
+contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
+    function() payable {}
+
     function createToken() internal returns (ERC20) {
         return new DSEthToken();
     }
     function setUp() {
+        super.setUp();
         // TokenTest precondition
         if (!token.call.value(initialBalance)()) throw;
     }
@@ -27,7 +32,7 @@ contract DSEthTokenTest is ERC20Test, DSEthTokenEvents {
 
         var startingBalance = this.balance;
         if (!token.call.value(10)("deposit")) throw;
-        assertTrue(DSEthToken(token).tryWithdraw(5));
+        assert(DSEthToken(token).tryWithdraw(5));
         assertEq(this.balance, startingBalance - 5);
     }
 
@@ -38,6 +43,7 @@ contract DSEthTokenTest is ERC20Test, DSEthTokenEvents {
         assertEq(attacker.balance, 0);
         assertEq(token.balanceOf(attacker), 100);
     }
+
     function testWithdrawAttack2Regression() {
         var attacker = new ReentrantWithdrawalAttack2(DSEthToken(token));
         if (!attacker.send(100)) throw;
@@ -63,7 +69,7 @@ contract ReentrantWithdrawalAttack {
         _token.tryWithdraw(_bal);
     }
 
-    function() {
+    function() payable {
         if (msg.sender == _owner) return;
         _token.tryWithdraw(_bal);
     }
@@ -87,7 +93,7 @@ contract ReentrantWithdrawalAttack2 {
         _token.withdraw(_bal / 4);
     }
 
-    function() {
+    function() payable {
         if (msg.sender == _owner) return;
         if (_entered) throw;
         _entered = true;
