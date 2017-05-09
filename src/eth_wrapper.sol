@@ -36,10 +36,20 @@ contract DSEthToken is DSTokenBase(0)
             return false;
         }
     }
-    
+
     function deposit() payable {
         _balances[msg.sender] += msg.value;
         Deposit(msg.sender, msg.value);
+    }
+
+    // widthdraw alias
+    function unwrap(uint amount) {
+        withdraw(amount);
+    }
+
+    // deposit alias
+    function wrap() payable {
+        deposit();
     }
 
     function() payable {
