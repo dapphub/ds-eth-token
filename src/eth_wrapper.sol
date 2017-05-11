@@ -16,10 +16,6 @@ contract DSEthToken is DSTokenBase(0)
     string public constant symbol   = "W-ETH";
     uint   public constant decimals = 18;
 
-    function totalSupply() constant returns (uint supply) {
-        return this.balance;
-    }
-
     function withdraw(uint amount) {
         if (!tryWithdraw(amount)) {
             throw;
@@ -28,17 +24,20 @@ contract DSEthToken is DSTokenBase(0)
 
     function tryWithdraw(uint amount) returns (bool ok) {
         _balances[msg.sender] = sub(_balances[msg.sender], amount);
+        _supply = sub(_supply, amount);
         if (tryExec(msg.sender, amount)) {
             Withdrawal(msg.sender, amount);
             return true;
         } else {
             _balances[msg.sender] = add(_balances[msg.sender], amount);
+            _supply = add(_supply, amount);
             return false;
         }
     }
     
     function deposit() payable {
-        _balances[msg.sender] += msg.value;
+        _balances[msg.sender] = add(_balances[msg.sender], msg.value);
+        _supply = add(_supply, msg.value);
         Deposit(msg.sender, msg.value);
     }
 

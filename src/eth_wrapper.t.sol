@@ -23,6 +23,7 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
 
         if (!token.call.value(10)("deposit")) throw;
         assertEq(token.balanceOf(this), initialBalance + 10);
+        assertEq(token.totalSupply(), initialBalance + 10);
     }
 
     function testWithdraw() {
@@ -34,6 +35,7 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
         if (!token.call.value(10)("deposit")) throw;
         assert(DSEthToken(token).tryWithdraw(5));
         assertEq(this.balance, startingBalance - 5);
+        assertEq(token.totalSupply(), initialBalance + 5);
     }
 
     function testAliases() {
