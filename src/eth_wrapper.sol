@@ -17,9 +17,7 @@ contract DSEthToken is DSTokenBase(0)
     uint   public constant decimals = 18;
 
     function withdraw(uint amount) {
-        if (!tryWithdraw(amount)) {
-            throw;
-        }
+        assert(tryWithdraw(amount));
     }
 
     function tryWithdraw(uint amount) returns (bool ok) {

@@ -14,14 +14,14 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
     function setUp() {
         super.setUp();
         // TokenTest precondition
-        if (!token.call.value(initialBalance)()) throw;
+        assert(token.call.value(initialBalance)());
     }
 
     function testDeposit() {
         expectEventsExact(token);
         Deposit(this, 10);
 
-        if (!token.call.value(10)("deposit")) throw;
+        assert(token.call.value(10)(bytes4(sha3("deposit()"))));
         assertEq(token.balanceOf(this), initialBalance + 10);
         assertEq(token.totalSupply(), initialBalance + 10);
     }
@@ -32,7 +32,7 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
         Withdrawal(this, 5);
 
         var startingBalance = this.balance;
-        if (!token.call.value(10)("deposit")) throw;
+        assert(token.call.value(10)(bytes4(sha3("deposit()"))));
         assert(DSEthToken(token).tryWithdraw(5));
         assertEq(this.balance, startingBalance - 5);
         assertEq(token.totalSupply(), initialBalance + 5);
@@ -41,7 +41,7 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
     function testAliases() {
         var startingBalance = this.balance;
 
-        if (!token.call.value(10)("wrap")) throw;
+        assert(token.call.value(10)(bytes4(sha3("wrap()"))));
         assertEq(token.balanceOf(this), initialBalance + 10);
         assertEq(this.balance, startingBalance - 10);
 
@@ -52,7 +52,7 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
 
     function testWithdrawAttackRegression() {
         var attacker = new ReentrantWithdrawalAttack(DSEthToken(token));
-        if (!attacker.send(100)) throw;
+        assert(attacker.send(100));
         attacker.attack();
         assertEq(attacker.balance, 0);
         assertEq(token.balanceOf(attacker), 100);
@@ -60,7 +60,7 @@ contract DSEthTokenTest is DSTokenBaseTest, DSEthTokenEvents {
 
     function testWithdrawAttack2Regression() {
         var attacker = new ReentrantWithdrawalAttack2(DSEthToken(token));
-        if (!attacker.send(100)) throw;
+        assert(attacker.send(100));
         attacker.attack();
         assertEq(attacker.balance, 25);
         assertEq(token.balanceOf(attacker), 75);
